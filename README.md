@@ -1,6 +1,6 @@
 # opentelemetry-sampler-go
 
-# Honeycomb Samplers for use with the OpenTelemetry Go SDK
+Honeycomb Samplers for use with the OpenTelemetry Go SDK
 
 ## Samplers
 
