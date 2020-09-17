@@ -28,7 +28,7 @@ var (
 )
 
 type DeterministicSampler struct {
-	sampleRate int
+	SampleRate int
 	upperBound uint32
 }
 
@@ -42,7 +42,7 @@ func NewDeterministicSampler(sampleRate uint) (*DeterministicSampler, error) {
 	// sample every value.
 	upperBound := math.MaxUint32 / uint32(sampleRate)
 	return &DeterministicSampler{
-		sampleRate: int(sampleRate),
+		SampleRate: int(sampleRate),
 		upperBound: upperBound,
 	}, nil
 }
@@ -55,14 +55,17 @@ func bytesToUint32be(b []byte) uint32 {
 
 func (ds *DeterministicSampler) ShouldSample(p trace.SamplingParameters) trace.SamplingResult {
 	if ds.SampleRate == 1 {
-		return true
+		return trace.SamplingResult{
+			Decision: trace.RecordAndSampled,
+		}
 	}
+	determinant := []byte(p.TraceID[:])
 	sum := sha1.Sum([]byte(determinant))
 	v := bytesToUint32be(sum[:4])
 
 	var decision trace.SamplingDecision
 	if v <= ds.upperBound {
-		decision = trace.SampleAndRecord
+		decision = trace.RecordAndSampled
 	} else {
 		decision = trace.NotRecord
 	}
@@ -70,4 +73,8 @@ func (ds *DeterministicSampler) ShouldSample(p trace.SamplingParameters) trace.S
 	return trace.SamplingResult{
 		Decision: decision,
 	}
+}
+
+func (ds *DeterministicSampler) Description() string {
+	return "A determistic head sampler for use with Honeycomb"
 }
