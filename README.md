@@ -1,5 +1,7 @@
 # opentelemetry-sampler-go
 
+**NOTE**: This is experimental and is subject to change a _lot_ or go away entirely. Use with caution.
+
 Honeycomb Samplers for use with the OpenTelemetry Go SDK
 
 ## Samplers
