@@ -54,9 +54,13 @@ func bytesToUint32be(b []byte) uint32 {
 }
 
 func (ds *DeterministicSampler) ShouldSample(p trace.SamplingParameters) trace.SamplingResult {
+	attrs := []label.KeyValue{
+		label.Int32("SampleRate", ds.SampleRate),
+	}
 	if ds.SampleRate == 1 {
 		return trace.SamplingResult{
 			Decision: trace.RecordAndSampled,
+			Attributes: attrs,
 		}
 	}
 	determinant := []byte(p.TraceID[:])
@@ -72,6 +76,7 @@ func (ds *DeterministicSampler) ShouldSample(p trace.SamplingParameters) trace.S
 
 	return trace.SamplingResult{
 		Decision: decision,
+		Attributes: attrs,
 	}
 }
 
