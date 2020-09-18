@@ -1,4 +1,4 @@
-# opentelemetry-sampler-go
+# opentelemetry-samplers-go
 
 **NOTE**: This is experimental and is subject to change a _lot_ or go away entirely. Use with caution.
 
@@ -12,11 +12,11 @@ This is a port of the deterministic sampler included in our [Go Beeline](https:/
 
 ```golang
 import (
-	"github.com/honeycombio/opentelemetry-sampler-go"
+	"github.com/honeycombio/opentelemetry-samplers-go/honeycombsamplers"
 	"go.opentelemetry.io/otel/sdk/trace"
 )
 
 config := trace.Config{
-	DefaultSampler: honeycomb.DeterministicSampler(5),
+	DefaultSampler: honeycombsamplers.DeterministicSampler(5),
 }
 ```
