@@ -20,6 +20,7 @@ import (
 	"errors"
 	"math"
 
+	"go.opentelemetry.io/otel/label"
 	"go.opentelemetry.io/otel/sdk/trace"
 )
 
@@ -27,12 +28,12 @@ var (
 	ErrInvalidSampleRate = errors.New("sample rate must be >= 1")
 )
 
-type DeterministicSampler struct {
-	SampleRate int
+type deterministicSampler struct {
+	sampleRate int
 	upperBound uint32
 }
 
-func NewDeterministicSampler(sampleRate uint) (*DeterministicSampler, error) {
+func DeterministicSampler(sampleRate uint) (*deterministicSampler, error) {
 	if sampleRate < 1 {
 		return nil, ErrInvalidSampleRate
 	}
@@ -41,8 +42,8 @@ func NewDeterministicSampler(sampleRate uint) (*DeterministicSampler, error) {
 	// the sample rate. In the case where the sample rate is 1, this should
 	// sample every value.
 	upperBound := math.MaxUint32 / uint32(sampleRate)
-	return &DeterministicSampler{
-		SampleRate: int(sampleRate),
+	return &deterministicSampler{
+		sampleRate: int(sampleRate),
 		upperBound: upperBound,
 	}, nil
 }
@@ -53,11 +54,11 @@ func bytesToUint32be(b []byte) uint32 {
 	return uint32(b[3]) | (uint32(b[2]) << 8) | (uint32(b[1]) << 16) | (uint32(b[0]) << 24)
 }
 
-func (ds *DeterministicSampler) ShouldSample(p trace.SamplingParameters) trace.SamplingResult {
+func (ds *deterministicSampler) ShouldSample(p trace.SamplingParameters) trace.SamplingResult {
 	attrs := []label.KeyValue{
-		label.Int32("SampleRate", ds.SampleRate),
+		label.Int32("SampleRate", int32(ds.sampleRate)),
 	}
-	if ds.SampleRate == 1 {
+	if ds.sampleRate == 1 {
 		return trace.SamplingResult{
 			Decision: trace.RecordAndSampled,
 			Attributes: attrs,
@@ -80,6 +81,6 @@ func (ds *DeterministicSampler) ShouldSample(p trace.SamplingParameters) trace.S
 	}
 }
 
-func (ds *DeterministicSampler) Description() string {
+func (ds *deterministicSampler) Description() string {
 	return "HoneycombDeterministicSampler"
 }
