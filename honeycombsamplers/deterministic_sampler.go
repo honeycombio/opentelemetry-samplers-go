@@ -81,5 +81,5 @@ func (ds *DeterministicSampler) ShouldSample(p trace.SamplingParameters) trace.S
 }
 
 func (ds *DeterministicSampler) Description() string {
-	return "A determistic head sampler for use with Honeycomb"
+	return "HoneycombDeterministicSampler"
 }
