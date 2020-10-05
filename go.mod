@@ -1,4 +1,4 @@
-module github.com/honeycombio/opentelemetry-sampler-go
+module github.com/honeycombio/opentelemetry-samplers-go
 
 go 1.14
 
