@@ -60,7 +60,7 @@ func (ds *deterministicSampler) ShouldSample(p trace.SamplingParameters) trace.S
 	}
 	if ds.sampleRate == 1 {
 		return trace.SamplingResult{
-			Decision: trace.RecordAndSampled,
+			Decision: trace.RecordAndSample,
 			Attributes: attrs,
 		}
 	}
@@ -70,9 +70,9 @@ func (ds *deterministicSampler) ShouldSample(p trace.SamplingParameters) trace.S
 
 	var decision trace.SamplingDecision
 	if v <= ds.upperBound {
-		decision = trace.RecordAndSampled
+		decision = trace.RecordAndSample
 	} else {
-		decision = trace.NotRecord
+		decision = trace.Drop
 	}
 
 	return trace.SamplingResult{
